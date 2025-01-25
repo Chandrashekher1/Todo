@@ -11,7 +11,6 @@ const Profile = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // Ensure user is redirected if not logged in
   useEffect(() => {
     if (!selector?.email) {
       navigate("/");

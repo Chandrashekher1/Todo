@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import TodoList from "./TodoList";
 import { collection, addDoc, getFirestore } from "firebase/firestore";
 import { app } from "../utils/firebase";
+import { getAuth } from "firebase/auth";
 
 
 const firebase = getFirestore(app);
@@ -16,9 +17,11 @@ const Home = () => {
     if(ref.current.value === "") return
     
     try {
-      await addDoc(collection(firebase, "users"), {
+      const data =  await addDoc(collection(firebase, "users"), {
         task: ref.current.value,
       });
+      console.log(data);
+      
       ref.current.value = ""
       setRefreshTasks((prev) => !prev)
     } catch (error) {
