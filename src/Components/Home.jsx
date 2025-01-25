@@ -4,24 +4,43 @@ import { collection, addDoc, getFirestore } from "firebase/firestore";
 import { app } from "../utils/firebase";
 import { getAuth } from "firebase/auth";
 
+const firebase = getFirestore(app)
+const auth = getAuth(app)
 
-const firebase = getFirestore(app);
+// console.log(auth.currentUser.email);
+
 
 const Home = () => {
-  const [currentTime, setCurrentTime] = useState(new Date())
+  const [currentTime, setCurrentTime] = useState(new Date());
+  const [refreshTasks, setRefreshTasks] = useState(false);
   const ref = useRef(null);
-  const [refreshTasks, setRefreshTasks] = useState(false)
+
+  const handleAlert = () => {
+    if (!auth.currentUser) { 
+      alert("Please login first");
+    } 
+  };
+  
 
   const handleAddButton = async (e) => {
-    e.preventDefault()
-    if(ref.current.value === "") return
-    
+    e.preventDefault();
+
+    const taskValue = ref.current.value.trim();
+    if (taskValue === "") return
+
+    const user = auth.currentUser
+    if (!user) {
+      console.error("User not logged in!");
+      return;
+    }
+
     try {
-      const data =  await addDoc(collection(firebase, "users"), {
-        task: ref.current.value,
+      const tasksCollection = collection(firebase, "users", user.uid, "tasks");
+      await addDoc(tasksCollection, {
+        task: taskValue,
       });
-      console.log(data);
-      
+      console.log("Task added successfully!");
+
       ref.current.value = ""
       setRefreshTasks((prev) => !prev)
     } catch (error) {
@@ -33,11 +52,11 @@ const Home = () => {
     const timer = setInterval(() => {
       setCurrentTime(new Date());
     }, 1000);
-    return () => clearInterval(timer);
-  }, []);
+    return () => clearInterval(timer)
+  }, [])
 
-  const options = { weekday: "long", month: "long", day: "numeric" };
-  const formattedDate = currentTime.toLocaleDateString(undefined, options);
+  const options = { weekday: "long", month: "long", day: "numeric" }
+  const formattedDate = currentTime.toLocaleDateString(undefined, options)
 
   return (
     <div className="m-8 w-full">
@@ -46,22 +65,26 @@ const Home = () => {
         <span className="text-gray-500">{formattedDate}</span>
       </div>
 
-      <form className="rounded-lg w-full shadow-md border mt-8 flex p-2" onSubmit={handleAddButton}>
+      <form
+        className="rounded-lg w-full shadow-md border mt-8 flex p-2"
+        onSubmit={handleAddButton}
+      >
         <span className="border ml-4 border-blue-500 mt-5 h-4 w-4 rounded-full"></span>
         <input
           type="text"
           placeholder="Add a task"
+          onClick={handleAlert}
           ref={ref}
           className="w-full p-4 outline-none bg-white rounded-lg"
         />
         <button
+          type="submit"
           className="border px-8 rounded-lg bg-gray-600 text-white font-semibold"
-          // onClick={handleAddButton}
         >
           Add
         </button>
       </form>
-      <TodoList key={refreshTasks} />
+      <TodoList key={refreshTasks} refreshTasks={refreshTasks} />
     </div>
   );
 };
