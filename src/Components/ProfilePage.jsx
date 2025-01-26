@@ -6,6 +6,9 @@ import { removeUser } from '../Store/userSlice';
 
 const Profile = () => {
   const [currentUser, setCurrentUser] = useState(null);
+  const selector = useSelector((store) => store?.user)
+  console.log(selector);
+  
   const auth = getAuth();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -29,7 +32,7 @@ const Profile = () => {
     } catch (error) {
       console.error("Error during sign out:", error.message);
     }
-  };
+  }
 
   if (!currentUser) {
     return <div className="text-center my-16">Loading user data...</div>;
