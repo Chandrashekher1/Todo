@@ -1,25 +1,25 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { getAuth, signInWithPopup, GoogleAuthProvider, updateProfile } from "firebase/auth";
+import { getAuth, signInWithPopup, GoogleAuthProvider, updateProfile, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 import { app } from "../utils/firebase";
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch} from 'react-redux';
 import { addUser } from '../Store/userSlice';
-import { createUserWithEmailAndPassword , signInWithEmailAndPassword } from "firebase/auth";
 
 const Login = () => {
   const navigate = useNavigate();
   const [isSignUp, setIsSIgnUp] = useState(false)
-  const [isMessage, setIsMessage] = useState(false)
-  const selector = useSelector((store) => store.user);
+  const [isMessage, setIsMessage] = useState('')
+  // const selector = useSelector((store) => store.user);
   const dispatch = useDispatch();
   const email = useRef(null)
   const password = useRef(null)
   const name = useRef(null)
   const auth = getAuth(app);
 
+  // Handle form submission (sign up or sign in)
   const handleForm = async (e) => {
     e.preventDefault();
-  
+
     try {
       if (isSignUp) {
         // Sign-up logic
@@ -29,13 +29,11 @@ const Login = () => {
           password.current?.value
         );
         const user = userCredential.user;
-  
- 
+
         await updateProfile(user, {
           displayName: name.current?.value,
         });
-  
-        // console.log("User after update:", user);
+
         dispatch(
           addUser({
             uid: user.uid,
@@ -43,8 +41,9 @@ const Login = () => {
             email: user.email,
           })
         );
-  
+
         navigate("/");
+
       } else {
         // Sign-in logic
         const userCredential = await signInWithEmailAndPassword(
@@ -53,9 +52,7 @@ const Login = () => {
           password.current?.value
         );
         const user = userCredential.user;
-  
-        console.log(user);
-  
+
         dispatch(
           addUser({
             uid: user.uid,
@@ -63,7 +60,7 @@ const Login = () => {
             displayName: user.displayName,
           })
         );
-  
+
         navigate("/profile");
       }
     } catch (error) {
@@ -71,15 +68,31 @@ const Login = () => {
       setIsMessage(error.message);
     }
   };
+
   const handleSignUp = () => {
-    setIsSIgnUp(!isSignUp)
+    setIsSIgnUp(!isSignUp);
   }
 
+  // Redirect user to profile if already logged in
   useEffect(() => {
-    if (selector?.email) {
-      navigate("/profile"); 
-    }
-  }, [selector, navigate])
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        dispatch(
+          addUser({
+            uid: user.uid,
+            email: user.email,
+            displayName: user.displayName || "User",
+            photoURL : user.photoURL
+          })
+        );
+        navigate("/profile");
+      } else {
+        navigate("/login")
+      }
+    });
+
+    return () => unsubscribe()
+  }, [dispatch, navigate, auth]);
 
   const handleSignIn = async () => {
     const provider = new GoogleAuthProvider();
@@ -92,13 +105,13 @@ const Login = () => {
         addUser({
           uid: user.uid,
           email: user.email,
-          name: user.displayName || "User",
+          displayName: user.displayName || "User",
+          photoURL : user.photoURL
         })
       );
 
-      navigate("/");
+      navigate("/profile");
 
-      console.log("User:", user);
     } catch (error) {
       console.error("Error during sign-in:", error.message);
       alert("Failed to sign in. Please try again.");
@@ -106,27 +119,29 @@ const Login = () => {
   };
 
   return (
-    <div className=' w-96 shadow-md mx-auto my-16'>
+    <div className='w-96 shadow-md mx-auto my-16'>
       <h1 className='font-bold text-center text-2xl m-4'>{isSignUp ? "Sign Up" : "Sign In"}</h1>
       <div>
         <form action="" onSubmit={handleForm}>
-          {isSignUp && <div className='mx-8 border'>
-            <label htmlFor="" className='mx-4 text-sm font-semibold'>Name</label>
-            <input type="text" ref={name} placeholder='Enter name' className='w-full p-2 px-4 outline-none'/>
-          </div>}
+          {isSignUp && (
+            <div className='mx-8 border'>
+              <label htmlFor="" className='mx-4 text-sm font-semibold'>Name</label>
+              <input type="text" ref={name} placeholder='Enter name' className='w-full p-2 px-4 outline-none'/>
+            </div>
+          )}
           <div className='mx-8 border my-2'>
             <label htmlFor="" className='mx-4 text-sm font-semibold'>Email</label>
             <input type="text" ref={email} placeholder='Enter Email' className='w-full p-2 px-4  outline-none'/>
           </div>
           <div className='mx-8 border my-2'>
             <label htmlFor="" className='mx-4 text-sm font-semibold'>Password</label>
-            <input type="text" ref={password} placeholder='Enter password' className='w-full p-2 px-4  outline-none'/>
+            <input type="password" ref={password} placeholder='Enter password' className='w-full p-2 px-4  outline-none'/>
           </div>
 
-          <button className=' bg-red-700 text-white font-semibold rounded-md p-2 my-4 border px-24 mx-16' type='submit'>Submit</button>
+          <button className='bg-red-700 text-white font-semibold rounded-md p-2 my-4 border px-24 mx-16' type='submit'>Submit</button>
         </form>
         <p className='text-red-600'>{isMessage}</p>
-          
+
         <p className='text-red-600 cursor-pointer mx-8 my-8 hover:underline' onClick={handleSignUp}>{isSignUp ? "Sign In" : "Create an account"}</p>
       </div>
       <h1 className='text-center font-bold text-xl mt-4'>OR</h1>
