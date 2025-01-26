@@ -72,8 +72,6 @@ const Login = () => {
   const handleSignUp = () => {
     setIsSIgnUp(!isSignUp);
   }
-
-  // Redirect user to profile if already logged in
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {

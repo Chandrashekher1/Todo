@@ -90,7 +90,7 @@ const Home = () => {
         className={`rounded-lg w-full shadow-md border mt-8 flex p-2 ${isMessage ? "border-red-700" : ""}`}
         onSubmit={handleAddButton}
       >
-        <span className="border ml-4 border-blue-500 mt-5 h-4 w-4 rounded-full"></span>
+        <span className="border ml-2 border-blue-500 mt-5 h-4 w-4 rounded-full md:ml-4"></span>
         <input
           type="text"
           value={text}
@@ -100,10 +100,10 @@ const Home = () => {
           ref={ref}
           className={`w-full p-4 outline-none bg-white rounded-lg `}
         />
-        <p className="p-2 mx-4 border rounded-full text-xl cursor-pointer" onClick={handleSpeech}><img className="h-10 w-10" src="https://cdn-icons-png.flaticon.com/512/1082/1082810.png" alt="" /></p>
+        <p className="p-2 mx-4 md:border rounded-full text-xl cursor-pointer" onClick={handleSpeech}><img className="h-8 md:h-10 w-10" src="https://cdn-icons-png.flaticon.com/512/1082/1082810.png" alt="" /></p>
         <button
           type="submit"
-          className="border px-8 rounded-lg bg-gray-600 text-white font-semibold"
+          className="border px-4 rounded-lg bg-gray-600 text-white font-semibold md:px-8"
         >
           Add
         </button>

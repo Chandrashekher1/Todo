@@ -15,8 +15,8 @@ const Header = () => {
         </div>
         <div>
             <ul className='flex'>
-                <li className='mx-8 cursor-pointer'>Setting</li>
-                <Link to="/login"><li className='mx-8 cursor-pointer'>Profile </li></Link>
+                <li className='mx-4 cursor-pointer md:mx-8'>Setting</li>
+                <Link to="/login"><li className='mx-4 cursor-pointer md:mx-8'>Profile </li></Link>
             </ul>
         </div>
     </div>

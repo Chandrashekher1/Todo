@@ -8,7 +8,7 @@ const Menu = () => {
     };
 
     return (
-        <div className='flex flex-col border shadow-md'>
+        <div className='hidden md:flex flex-col border shadow-md'>
             <div className='m-8 cursor-pointer' onClick={handleHamburger}>
                 <div className='w-8 bg-gray-400 h-1 rounded-xl my-1'></div>
                 <div className='w-8 bg-gray-400 h-1 rounded-xl my-1'></div>

@@ -35,11 +35,11 @@ const Profile = () => {
   }
 
   if (!currentUser) {
-    return <div className="text-center my-16">Loading user data...</div>;
+    return <div className="text-center my-16 text-2xl ">Loading user data...</div>;
   }
 
   return (
-    <div className='border text-center my-16 mx-auto w-[50%] shadow-md'>
+    <div className='border text-center my-16 mx-auto w-[80%] shadow-md md:w-[50%]'>
       <h1 className='font-bold text-2xl'>Profile Info</h1>
       <div className='font-semibold my-4 flex flex-col-reverse'>
         <h1 className='my-4 text-2xl'>

@@ -56,16 +56,16 @@ const TodoList = ({ refreshTasks }) => {
             doneTasks.has(id) ? "line-through text-gray-400" : ""
           }`}
         >
-          <p>{task}</p>
+          <p className="text-wrap">{task}</p>
           <div>
             <button
-              className="bg-green-600 p-2 text-white rounded-lg"
+              className="bg-green-600 p-1 text-white rounded-lg md:p-2"
               onClick={() => handleDone(id)}
             >
               Done
             </button>
             <button
-              className="mx-4 bg-red-600 text-white p-2 rounded-lg"
+              className="mx-1 bg-red-600 text-white p-1 rounded-lg md:p-2 md:mx-4"
               onClick={() => handleDelete(id)}
             >
               Delete
