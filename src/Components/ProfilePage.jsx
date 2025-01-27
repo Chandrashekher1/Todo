@@ -39,18 +39,19 @@ const Profile = () => {
   }
 
   return (
-    <div className='border text-center my-16 mx-auto w-[80%] shadow-md md:w-[50%]'>
-      <h1 className='font-bold text-2xl'>Profile Info</h1>
-      <div className='font-semibold my-4 flex flex-col-reverse'>
-        <h1 className='my-4 text-2xl'>
-          Name: <span className='text-xl mx-10'>{currentUser.displayName || "User"}</span>
-        </h1>
+    <div className='border t my-16 mx-auto w-[90%] shadow-md md:w-[50%]'>
+      <h1 className='font-bold text-2xl text-center'>Profile Info</h1>
+      <div className='font-semibold my-4 flex flex-col-reverse ml-16 justify-center md:mx-40'>
+        
         <h1 className='font-semibold text-2xl'>
-          Email: <span className='text-xl mx-2'>{currentUser.email || "Null"}</span>
+          Email: <span className='text-xl mx-2 '>{currentUser.email || "Null"}</span>
+        </h1>
+        <h1 className='my-4 text-2xl'>
+          Name: <span className='text-xl '>{currentUser.displayName || "User"}</span>
         </h1>
 
         {currentUser.photoURL && (
-          <div className="flex justify-center my-4">
+          <div className="mx-16 my-4">
             <img
               src={currentUser.photoURL}
               alt="User Profile"
@@ -60,7 +61,7 @@ const Profile = () => {
         )}
       </div>
       <button
-        className='border px-8 rounded-md my-4 p-2 bg-red-600 text-white font-semibold hover:bg-red-500'
+        className='border px-12 rounded-md my-4 p-2 mx-20  bg-red-600 text-white font-semibold hover:bg-red-500 md:mx-40 md:px-20'
         onClick={handleSignOut}
       >
         Sign Out
